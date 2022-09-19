@@ -1,4 +1,12 @@
-const { app, BrowserWindow, desktopCapturer, ipcMain } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  desktopCapturer,
+  ipcMain,
+  dialog
+} = require('electron');
+
+// const { dialog } = require('@electron/remote/main');
 
 const path = require('path');
 const isDev = require('electron-is-dev');
@@ -46,4 +54,12 @@ ipcMain.on('GET_SOURCES', (event, args) => {
   desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
     event.sender.send('SET_SOURCES', sources); 
   }); 
+});
+
+ipcMain.on('SHOW_SAVE_DIALOG', async (event, args) => {
+  const { filePath } = await dialog.showSaveDialog({
+    buttonLabel: 'Save video',
+    defaultPath: `vid-${Date.now()}.webm`
+  });
+  event.sender.send('FILE_PATH', filePath); 
 });

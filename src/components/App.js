@@ -4,11 +4,35 @@ import Video from './Video';
 import ThemeButton from './ThemeButton';
 import RecordButton from './RecordButton';
 
-const { ipcRenderer  } = window.require('electron');
+const { ipcRenderer } = window.require('electron');
+const { writeFile } = window.require('fs');
 
 function App() {
   const [sources, setSources] = useState([]);
   const [source, setSource] = useState(null);
+  const [stream, setStream] = useState(null);
+  const [media, setMedia] = useState([]);
+
+  const recordedChunks = [];
+
+  // Captures all recorded chunks
+  const handleDataAvailable = (e) => recordedChunks.push(e.data);
+
+  // Saves the video file on stop
+  const handleStop = () => {
+    ipcRenderer.send('SHOW_SAVE_DIALOG');
+    ipcRenderer.once('FILE_PATH', async (event, filePath) => {
+      const blob = new Blob(recordedChunks, {
+        type: 'video/webm; codecs=vp9'
+      });
+  
+      const buffer = Buffer.from(await blob.arrayBuffer());
+
+      if (filePath) {
+        writeFile(filePath, buffer, () => recordedChunks.splice(0, recordedChunks.length));
+      }
+    });
+  };
 
   const getVideoSources = () => ipcRenderer.send('GET_SOURCES');
 
@@ -19,15 +43,51 @@ function App() {
     getVideoSources();
   }, []);
 
+  useEffect(() => {
+    if (source) {
+      const createStream = async () => {
+        const constraints = {
+          audio: false,
+          video: {
+            mandatory: {
+              chromeMediaSource: 'desktop',
+              chromeMediaSourceId: source
+            }
+          }
+        };
+        setStream(await navigator.mediaDevices
+          .getUserMedia(constraints));
+      };
+      createStream();
+    } else {
+      setStream(null);
+    }
+  }, [source]);
+
+  useEffect(() =>{
+    if (stream) {
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm; codecs=vp9'
+      });
+
+      mediaRecorder.ondataavailable = handleDataAvailable;
+      mediaRecorder.onstop = handleStop;
+
+      setMedia(mediaRecorder);
+    } else {
+      setMedia(null);
+    }
+  }, [stream]);
+
   return (
     <>
       <ThemeButton />
       <Center>
         <VStack width={'100%'}>
-          <Video source={source}/>
+          <Video stream={stream}/>
           <Divider margin='20px' maxWidth={'90%'}/>    
           <HStack spacing='24px'>
-            <RecordButton />
+            <RecordButton startRecord={() => media.start()} stopRecord={() => media.stop()}/>
             <Select placeholder='Select file type' maxWidth={'200px'}>
               <option value='option1'>Option 1</option>
               <option value='option2'>Option 2</option>

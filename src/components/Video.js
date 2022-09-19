@@ -1,32 +1,18 @@
 import { useRef, useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
-import { string } from 'prop-types';
+import { object } from 'prop-types';
 
-function Video({ source }) {
+function Video({ stream }) {
     const videoNode = useRef(null);
 
     useEffect(() => {
-        if (videoNode.current && source) {
-            const create = async () => {
-                const constraints = {
-                    audio: false,
-                    video: {
-                        mandatory: {
-                            chromeMediaSource: 'desktop',
-                            chromeMediaSourceId: source
-                        }
-                    }
-                };
-                const stream = await navigator.mediaDevices
-                    .getUserMedia(constraints);
-                videoNode.current.srcObject = stream;
-                videoNode.current.play();
-            };
-            create();
+        if (videoNode.current && stream) {
+            videoNode.current.srcObject = stream;
+            videoNode.current.play();
         } else if (videoNode.current) {
             videoNode.current.srcObject = null;
         }
-    }, [videoNode, source]);
+    }, [videoNode, stream]);
 
     return (
         <>
@@ -39,7 +25,7 @@ function Video({ source }) {
                 position={'relative'}
                 color={'#969696'}
             >
-                {!source &&
+                {!stream &&
                     <span
                         style={{
                             position: 'absolute',
@@ -56,7 +42,7 @@ function Video({ source }) {
 }
 
 Video.propTypes = {
-    source: string
+    stream: object
 };
 
 export default Video;
