@@ -87,13 +87,16 @@ function App() {
           <Video stream={stream}/>
           <Divider margin='20px' maxWidth={'90%'}/>    
           <HStack spacing='24px'>
-            <RecordButton startRecord={() => media.start()} stopRecord={() => media.stop()}/>
-            <Select placeholder='Select file type' maxWidth={'200px'}>
-              <option value='option1'>Option 1</option>
-              <option value='option2'>Option 2</option>
-              <option value='option3'>Option 3</option>
-            </Select>
-            <Select placeholder='Select source' onChange={e => setSource(e.target.value)}>
+            <RecordButton
+              isStream={!!stream}
+              startRecord={() => media.start()}
+              stopRecord={() => media.stop()}
+            />
+            <Select 
+              placeholder='Select source'
+              onClick={() => getVideoSources()}
+              onChange={e => setSource(e.target.value)}
+            >
               {sources.map(({ id, name }) => 
                 <option key={id} value={id}>{name}</option>
               )}
