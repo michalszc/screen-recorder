@@ -6,8 +6,6 @@ const {
   dialog
 } = require('electron');
 
-// const { dialog } = require('@electron/remote/main');
-
 const path = require('path');
 const isDev = require('electron-is-dev');
 
@@ -30,6 +28,8 @@ function createWindow() {
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
+
+  win.setMenuBarVisibility(false);
 
 }
 
