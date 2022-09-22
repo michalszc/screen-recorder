@@ -1,6 +1,6 @@
 {
   "name": "screen-recorder",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@chakra-ui/react": "^2.3.2",
@@ -12,7 +12,6 @@
     "@testing-library/user-event": "^13.5.0",
     "concurrently": "^7.4.0",
     "cross-env": "^7.0.3",
-    "electron": "^20.1.4",
     "electron-is-dev": "^2.0.0",
     "framer-motion": "^7.3.5",
     "react": "^18.2.0",
@@ -28,8 +27,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "compile": "electron-webpack",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\"",
-    "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js",
+    "electron:build": "yarn compile && yarn build && electron-builder -c.extraMetadata.main=build/main.js",
     "electron:start": "wait-on tcp:3000 && electron .",
     "eslint": "eslint ./src/ --ignore-path .gitignore",
     "eslint:fix": "eslint ./src/ --ignore-path .gitignore --fix"
@@ -89,12 +89,24 @@
       "last 1 safari version"
     ]
   },
+  "electronWebpack": {
+    "commonSourceDirectory": "common",
+    "main": {
+      "sourceDirectory": "./public"
+    },
+    "renderer": {
+      "sourceDirectory": null
+    }
+  },
   "main": "public/main.js",
   "homepage": "./",
   "repository": "https://github.com/michalszc/screen-recorder.git",
   "author": "Michal <michalszc05@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "electron": "^20.1.4",
+    "electron-builder": "^23.3.3",
+    "electron-webpack": "^2.8.2",
     "eslint": "^8.23.1"
   }
 }
