@@ -4,6 +4,7 @@ import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import Video from './Video';
 import ThemeButton from './ThemeButton';
 import RecordButton from './RecordButton';
+import Timer from './Timer';
 
 const { ipcRenderer } = window.require('electron');
 const { writeFile } = window.require('fs');
@@ -65,6 +66,7 @@ function App() {
           <Video />
           <Divider margin='20px' maxWidth={'90%'}/>    
           <HStack spacing='24px'>
+            <Timer />
             <RecordButton />
             <Select 
               placeholder='Select source'
