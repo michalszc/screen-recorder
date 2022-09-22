@@ -1,9 +1,35 @@
 import { useRef, useEffect } from 'react';
+import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import { Box, useColorModeValue } from '@chakra-ui/react';
-import { object } from 'prop-types';
 
-function Video({ stream }) {
+function Video() {
+    const { stream, source, media, setStream, stopRecording } = useScreenRecorder();
     const videoNode = useRef(null);
+
+    useEffect(() => {
+        if (media?.state === 'recording') {
+            media.stop();
+        }
+        if (source) {
+          const createStream = async () => {
+            const constraints = {
+              audio: false,
+              video: {
+                mandatory: {
+                  chromeMediaSource: 'desktop',
+                  chromeMediaSourceId: source
+                }
+              }
+            };
+            setStream(await navigator.mediaDevices
+              .getUserMedia(constraints));
+          };
+          createStream();
+        } else {
+            setStream(null);
+        }
+        stopRecording();
+      }, [source]);
 
     useEffect(() => {
         if (videoNode.current && stream) {
@@ -38,9 +64,5 @@ function Video({ stream }) {
         </Box>
     );
 }
-
-Video.propTypes = {
-    stream: object
-};
 
 export default Video;

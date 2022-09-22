@@ -1,36 +1,37 @@
 import { Button, Tooltip, Icon } from '@chakra-ui/react';
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
+import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import { BsRecordCircle } from 'react-icons/bs';
 
-function RecordButton({ startRecord, stopRecord, isStream }) {
-    const [recording, setRecording] = useState(false);
+function RecordButton() {
+    const { stream, media, isRecording, startRecording, stopRecording } = useScreenRecorder();
 
     const handleClick = () => {
-        if (!isStream) return; 
-        if (recording) {
-            stopRecord();
-            setRecording(false);
+        if (!stream) return; 
+        if (isRecording) {
+            media.stop();
+            stopRecording();
         } else {
-            startRecord();
-            setRecording(true);
+            media.start();
+            startRecording();
         }
     };
 
     const label = useMemo(() => {
-        if (!isStream) {
+        if (!stream) {
             return 'Select source and start recording';
-        } else if (recording) {
+        } else if (isRecording) {
             return 'Stop recording';
         } else {
             return 'Start recording';
         }
-    }, [isStream, recording]);
+    }, [stream, isRecording]);
 
     return (
         <Tooltip hasArrow label={label}>
             <Button onClick={handleClick}>
                 {
-                    recording ?
+                    isRecording ?
                      <Icon as={BsRecordCircle} boxSize={6} color={'red'}/>
                      : <Icon as={BsRecordCircle} boxSize={6}/>
                 }

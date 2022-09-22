@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Divider, Select, Center, HStack, VStack } from '@chakra-ui/react';
+import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import Video from './Video';
 import ThemeButton from './ThemeButton';
 import RecordButton from './RecordButton';
@@ -9,9 +10,7 @@ const { writeFile } = window.require('fs');
 
 function App() {
   const [sources, setSources] = useState([]);
-  const [source, setSource] = useState(null);
-  const [stream, setStream] = useState(null);
-  const [media, setMedia] = useState([]);
+  const { stream, setSource, setMedia } = useScreenRecorder();
 
   const recordedChunks = [];
 
@@ -34,36 +33,6 @@ function App() {
     });
   };
 
-  const getVideoSources = () => ipcRenderer.send('GET_SOURCES');
-
-  useEffect(() => {
-    ipcRenderer.on('SET_SOURCES', async (event, newSources) => {
-      setSources(newSources);
-    });
-    getVideoSources();
-  }, []);
-
-  useEffect(() => {
-    if (source) {
-      const createStream = async () => {
-        const constraints = {
-          audio: false,
-          video: {
-            mandatory: {
-              chromeMediaSource: 'desktop',
-              chromeMediaSourceId: source
-            }
-          }
-        };
-        setStream(await navigator.mediaDevices
-          .getUserMedia(constraints));
-      };
-      createStream();
-    } else {
-      setStream(null);
-    }
-  }, [source]);
-
   useEffect(() =>{
     if (stream) {
       const mediaRecorder = new MediaRecorder(stream, {
@@ -79,19 +48,24 @@ function App() {
     }
   }, [stream]);
 
+  const getVideoSources = () => ipcRenderer.send('GET_SOURCES');
+
+  useEffect(() => {
+    ipcRenderer.on('SET_SOURCES', async (event, newSources) => {
+      setSources(newSources);
+    });
+    getVideoSources();
+  }, []);
+
   return (
     <>
       <ThemeButton />
       <Center>
         <VStack width={'100%'}>
-          <Video stream={stream}/>
+          <Video />
           <Divider margin='20px' maxWidth={'90%'}/>    
           <HStack spacing='24px'>
-            <RecordButton
-              isStream={!!stream}
-              startRecord={() => media.start()}
-              stopRecord={() => media.stop()}
-            />
+            <RecordButton />
             <Select 
               placeholder='Select source'
               onClick={() => getVideoSources()}
