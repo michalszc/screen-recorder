@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Center, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useStopwatch } from 'react-timer-hook';
 import useScreenRecorder from '../contexts/ScreenRecorderContext';
@@ -21,9 +21,11 @@ function Timer() {
     }, [isRecording]);
     
     return (
-        <Text>
-            {formatTime({seconds, minutes, hours, days})}
-        </Text>
+        <Center>
+            <Text>
+                {formatTime({seconds, minutes, hours, days})}
+            </Text>
+        </Center>
     );
 }
   

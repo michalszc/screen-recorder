@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Divider, Select, Center, HStack, VStack } from '@chakra-ui/react';
+import { Divider, Select, Center, Stack, VStack } from '@chakra-ui/react';
 import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import Video from './Video';
 import ThemeButton from './ThemeButton';
@@ -65,7 +65,12 @@ function App() {
         <VStack width={'100%'}>
           <Video />
           <Divider margin='20px' maxWidth={'90%'}/>    
-          <HStack spacing='24px'>
+          <Stack
+            direction={['column', 'row']}
+            spacing={'24px'}
+            wrap={true}
+            maxW={'80%'}
+          >
             <Timer />
             <RecordButton />
             <Select 
@@ -77,7 +82,7 @@ function App() {
                 <option key={id} value={id}>{name}</option>
               )}
             </Select>
-          </HStack>
+          </Stack>
         </VStack>
       </Center>
     </>

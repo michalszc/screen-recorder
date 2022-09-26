@@ -30,6 +30,10 @@ function createWindow() {
   );
 
   win.setMenuBarVisibility(false);
+  
+  if (isDev) {
+    win.webContents.openDevTools();
+  }
 
 }
 

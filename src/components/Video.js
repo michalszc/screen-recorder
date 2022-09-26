@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import useScreenRecorder from '../contexts/ScreenRecorderContext';
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 
 function Video() {
     const { stream, source, media, setStream, stopRecording } = useScreenRecorder();
@@ -44,23 +44,24 @@ function Video() {
 
     return (
         <Box
-            maxW={'2xl'}
+            minW={'300px'}
+            maxW={'full'}
+            minH={'150px'}
+            maxH={'70vh'}
             mb={'25px'}
             bg={bg}
             textAlign={'center'}
             position={'relative'}
+            zIndex={0}
         >
-            {!stream &&
-                <span
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)'
-                    }}
-                >NO VIDEO SOURCE</span>
-            }
-            <video ref={videoNode} />
+            <Text
+                position={"absolute"}
+                top={'50%'}
+                left={'50%'}
+                transform={'translate(-50%, -50%)'}
+                zIndex={'hide'}
+            >NO VIDEO SOURCE</Text>
+            <video ref={videoNode} style={{ maxHeight: 'inherit' }}/>
         </Box>
     );
 }
