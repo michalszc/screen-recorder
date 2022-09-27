@@ -4,7 +4,8 @@ export const initialState = {
     stream: null,
     source: null,
     media: null,
-    progress: 0, 
+    progress: 0,
+    extension: 'webm',
     isRecording: false
   };
   
@@ -35,6 +36,12 @@ const screenRecorderReducer = (state, action) => {
         return {
             ...state,
             progress: payload.progress
+        };
+        case ActionTypes.SET_EXTENSION:
+
+        return {
+            ...state,
+            extension: payload.extension
         };
         case ActionTypes.START_RECORDING:
 

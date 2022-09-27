@@ -54,6 +54,12 @@ app.on('activate', function () {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 });
 
+let ext;
+
+ipcMain.on('SET_EXTENSION', (event, extension) => {
+  ext = extension;
+});
+
 ipcMain.on('GET_SOURCES', (event) => {
   desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
     event.sender.send('SET_SOURCES', sources); 
@@ -63,7 +69,7 @@ ipcMain.on('GET_SOURCES', (event) => {
 ipcMain.on('SHOW_SAVE_DIALOG', async (event) => {
   const { filePath } = await dialog.showSaveDialog({
     buttonLabel: 'Save video',
-    defaultPath: `vid-${Date.now()}.webm`
+    defaultPath: `vid-${Date.now()}.${ext}`
   });
   event.sender.send('FILE_PATH', filePath); 
 });

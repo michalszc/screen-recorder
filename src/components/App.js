@@ -6,12 +6,16 @@ import ThemeButton from './ThemeButton';
 import RecordButton from './RecordButton';
 import Timer from './Timer';
 import createVideoFile from '../utils/ffmpegHelpers';
+import extensions from '../constants/extensions';
 
 const { ipcRenderer } = window.require('electron');
 
 function App() {
   const [sources, setSources] = useState([]);
-  const { stream, progress, setSource, setMedia, setProgress } = useScreenRecorder();
+  const {
+    stream, progress, extension, 
+    setSource, setMedia, setProgress, setExtension
+  } = useScreenRecorder();
 
   const recordedChunks = [];
 
@@ -58,6 +62,10 @@ function App() {
     getVideoSources();
   }, []);
 
+  useEffect(() => {
+    ipcRenderer.send('SET_EXTENSION', extension);
+  }, [extension]);
+
   return (
     <>
       <ThemeButton />
@@ -74,6 +82,15 @@ function App() {
           >
             <Timer />
             <RecordButton />
+            <Select 
+              placeholder='Select extension'
+              onChange={e => setExtension(e.target.value)}
+              defaultValue={extension}
+            >
+              {extensions.map((ext, i) => 
+                <option key={i} value={ext}>{ext}</option>
+              )}
+            </Select>
             <Select 
               placeholder='Select source'
               onClick={() => getVideoSources()}

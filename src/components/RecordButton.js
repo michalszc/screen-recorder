@@ -21,7 +21,7 @@ function RecordButton() {
         if (!stream) {
             return 'Select source and start recording';
         } else if (progress !== 0) {
-            return 'Wait until record is saved';  
+            return 'Wait until encoding is finished';  
         } else if (isRecording) {
             return 'Stop recording';
         } else {
