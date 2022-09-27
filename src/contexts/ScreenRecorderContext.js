@@ -34,6 +34,15 @@ export const ScreenRecorderProvider = ({ children }) => {
         });
     };
 
+    const setProgress = (progress) => {
+        dispatch({
+            type: ActionTypes.SET_PROGRESS,
+            payload: {
+                progress
+            }
+        });
+    };
+
     const startRecording = () => {
         dispatch({
             type: ActionTypes.START_RECORDING
@@ -50,10 +59,12 @@ export const ScreenRecorderProvider = ({ children }) => {
         stream: state.stream,
         source: state.source,
         media: state.media,
+        progress: state.progress,
         isRecording: state.isRecording,
         setStream,
         setSource,
         setMedia,
+        setProgress,
         startRecording,
         stopRecording
     };

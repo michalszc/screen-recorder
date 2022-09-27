@@ -25,3 +25,14 @@ export function formatTime({seconds, minutes, hours, days}) {
         return `${addZero(minutes)}:${addZero(seconds)}`;
     }
 }
+
+/**
+ * Converts string passed as hh:mm:ss.ms to milliseconds
+ * @param {String} time 
+ * @returns {Number}
+ */
+export function convertTime(time) {
+    const hms = time.split(/[.:]/);
+
+    return (+hms[0]) * 60 * 60 * 1000 + (+hms[1]) * 60 * 1000 + (+hms[2]) * 1000 + (+hms[3]);
+}

@@ -4,7 +4,7 @@ import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import { BsRecordCircle } from 'react-icons/bs';
 
 function RecordButton() {
-    const { stream, media, isRecording, startRecording, stopRecording } = useScreenRecorder();
+    const { stream, media, progress, isRecording, startRecording, stopRecording } = useScreenRecorder();
 
     const handleClick = () => {
         if (!stream) return; 
@@ -20,16 +20,18 @@ function RecordButton() {
     const label = useMemo(() => {
         if (!stream) {
             return 'Select source and start recording';
+        } else if (progress !== 0) {
+            return 'Wait until record is saved';  
         } else if (isRecording) {
             return 'Stop recording';
         } else {
             return 'Start recording';
         }
-    }, [stream, isRecording]);
+    }, [stream, isRecording, progress]);
 
     return (
         <Tooltip hasArrow label={label}>
-            <Button onClick={handleClick}>
+            <Button onClick={handleClick} disabled={progress !== 0}>
                 {
                     isRecording ?
                      <Icon as={BsRecordCircle} boxSize={6} color={'red'}/>

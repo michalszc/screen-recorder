@@ -4,6 +4,7 @@ export const initialState = {
     stream: null,
     source: null,
     media: null,
+    progress: 0, 
     isRecording: false
   };
   
@@ -28,6 +29,12 @@ const screenRecorderReducer = (state, action) => {
         return {
             ...state,
             media: payload.media
+        };
+        case ActionTypes.SET_PROGRESS:
+
+        return {
+            ...state,
+            progress: payload.progress
         };
         case ActionTypes.START_RECORDING:
 
