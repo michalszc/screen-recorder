@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Divider, Select, Center, Stack, VStack, Progress } from '@chakra-ui/react';
+import { useState, useEffect, useRef } from 'react';
+import { Divider, Select, Center, Stack, VStack, Progress, Checkbox } from '@chakra-ui/react';
 import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import Video from './Video';
 import ThemeButton from './ThemeButton';
@@ -13,24 +13,27 @@ const { ipcRenderer } = window.require('electron');
 function App() {
   const [sources, setSources] = useState([]);
   const {
-    stream, progress, extension, 
-    setSource, setMedia, setProgress, setExtension
+    stream, progress, extension,
+    audio, setSource, setMedia,
+    setProgress, setExtension, toggleAudio
   } = useScreenRecorder();
 
-  const recordedChunks = [];
+  const recordedChunks = useRef([]);
 
   // Captures all recorded chunks
-  const handleDataAvailable = (e) => recordedChunks.push(e.data);
+  const handleDataAvailable = (e) => recordedChunks.current.push(e.data);
 
   // Saves the video file on stop
   const handleStop = () => {
     ipcRenderer.send('SHOW_SAVE_DIALOG');
     ipcRenderer.once('FILE_PATH', async (event, filePath) => {
-      const blob = new Blob(recordedChunks, {
+      const blob = new Blob(recordedChunks.current, {
         type: 'video/webm; codecs=vp9'
       });
   
       const buffer = Buffer.from(await blob.arrayBuffer());
+      
+      recordedChunks.current.splice(0, recordedChunks.current.length);
 
       if (filePath) {
         await createVideoFile(buffer, filePath, setProgress);
@@ -82,6 +85,7 @@ function App() {
           >
             <Timer />
             <RecordButton />
+            <Checkbox isChecked={audio} onChange={() => toggleAudio()}>audio</Checkbox>
             <Select 
               placeholder='Select extension'
               onChange={e => setExtension(e.target.value)}

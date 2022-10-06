@@ -52,6 +52,12 @@ export const ScreenRecorderProvider = ({ children }) => {
         });
     };
 
+    const toggleAudio = () => {
+        dispatch({
+            type: ActionTypes.TOGGLE_AUDIO
+        });
+    };
+
     const startRecording = () => {
         dispatch({
             type: ActionTypes.START_RECORDING
@@ -71,11 +77,13 @@ export const ScreenRecorderProvider = ({ children }) => {
         progress: state.progress,
         extension: state.extension,
         isRecording: state.isRecording,
+        audio: state.audio,
         setStream,
         setSource,
         setMedia,
         setProgress,
         setExtension,
+        toggleAudio,
         startRecording,
         stopRecording
     };

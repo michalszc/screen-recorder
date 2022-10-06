@@ -6,7 +6,8 @@ export const initialState = {
     media: null,
     progress: 0,
     extension: 'webm',
-    isRecording: false
+    isRecording: false,
+    audio: true
   };
   
 const screenRecorderReducer = (state, action) => {
@@ -42,6 +43,12 @@ const screenRecorderReducer = (state, action) => {
         return {
             ...state,
             extension: payload.extension
+        };
+        case ActionTypes.TOGGLE_AUDIO:
+
+        return {
+            ...state,
+            audio: !state.audio
         };
         case ActionTypes.START_RECORDING:
 

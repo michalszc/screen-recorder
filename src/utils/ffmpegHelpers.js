@@ -31,7 +31,6 @@ export default async  function createVideoFile(videoBuffer, filePath, setProgres
     await ffmpeg
         .input(readableVideoBuffer)
         .output(filePath)
-        .withNoAudio()
         // eslint-disable-next-line no-console
         .on('start', () => console.log('start'))
         .on('progress', progress => {

@@ -3,7 +3,7 @@ import useScreenRecorder from '../contexts/ScreenRecorderContext';
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 
 function Video() {
-    const { stream, source, media, setStream, stopRecording } = useScreenRecorder();
+    const { stream, source, media, audio, setStream, stopRecording } = useScreenRecorder();
     const videoNode = useRef(null);
 
     useEffect(() => {
@@ -13,7 +13,11 @@ function Video() {
         if (source) {
           const createStream = async () => {
             const constraints = {
-              audio: false,
+              audio: audio ? {
+                mandatory: {
+                  chromeMediaSource: 'desktop'
+                }
+              } : false,
               video: {
                 mandatory: {
                   chromeMediaSource: 'desktop',
@@ -21,6 +25,7 @@ function Video() {
                 }
               }
             };
+
             setStream(await navigator.mediaDevices
               .getUserMedia(constraints));
           };
@@ -29,7 +34,7 @@ function Video() {
             setStream(null);
         }
         stopRecording();
-      }, [source]);
+      }, [source, audio]);
 
     useEffect(() => {
         if (videoNode.current && stream) {
@@ -61,7 +66,7 @@ function Video() {
                 transform={'translate(-50%, -50%)'}
                 zIndex={'hide'}
             >NO VIDEO SOURCE</Text>
-            <video ref={videoNode} style={{ maxHeight: 'inherit' }}/>
+            <video ref={videoNode} muted={true} style={{ maxHeight: 'inherit' }}/>
         </Box>
     );
 }
