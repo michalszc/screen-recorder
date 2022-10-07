@@ -3,6 +3,10 @@
 
 A Desktop screen recorder app built using web technologies.
 
+<p align="center">
+  <img src="../assets/screen-recorder.PNG?raw=true" alt="screen-recorder" />
+</p>
+
 ## Download
 👉 [Check the latest release](https://github.com/michalszc/screen-recorder/releases/latest)
 
